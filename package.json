@@ -11,10 +11,8 @@
     "build": "npm run clean && npm run build:webpack && npm run html",
     "html": "cp index.html dist/index.html",
     "login": "firebase login",
-    "bootstrap": "firebase data:set / bootstrap.json",
-    "deploy:hosting": "firebase deploy:hosting",
-    "deploy:rules": "firebase deploy:rules",
-    "deploy": "npm run deploy:rules && npm run deploy:hosting",
+    "bootstrap": "firebase database:set /bootstrap.json",
+    "deploy": "firebase deploy --only hosting",
     "lint": "eslint src"
   },
   "author": "Lari Hoppula",
