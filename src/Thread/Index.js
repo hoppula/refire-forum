@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { FirebaseWrite, bindings, routeActions } from 'refire-app'
 
-import drop from 'lodash/array/drop'
-import take from 'lodash/array/take'
-import find from 'lodash/collection/find'
+import drop from 'lodash/drop'
+import take from 'lodash/take'
+import find from 'lodash/find'
 
 import { isUserAdmin } from '../utils'
 import { deleteThread, toggleThreadLocked, deletePost, toggleUpvote } from '../updates'

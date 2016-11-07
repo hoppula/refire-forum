@@ -139,7 +139,7 @@
           "$postId" : {
           	".write": "auth !== null && (auth.uid === $uid)"
           }
-        },
+        }
       }
     },
     "settings": {

@@ -1,5 +1,5 @@
 import emojilib from 'emojilib'
-import includes from 'lodash/collection/includes'
+import includes from 'lodash/includes'
 import moment from 'moment'
 
 const emojis = Object.keys(emojilib.lib).reduce((result, key) => {
@@ -35,7 +35,7 @@ export function isUserAdmin(adminUsers, user) {
 }
 
 export function momentLocaleSetup() {
-  moment.locale('en', {
+  moment.updateLocale('en', {
     relativeTime: {
       future: 'in %s',
       past: '%s',

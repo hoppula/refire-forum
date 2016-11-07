@@ -1,5 +1,5 @@
 import { firebase } from 'refire-app'
-import includes from 'lodash/collection/includes'
+import includes from 'lodash/includes'
 
 export function newThread({ boardId, topic, text, user }) {
   const ref = firebase.database().ref()

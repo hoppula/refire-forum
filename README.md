@@ -2,8 +2,6 @@
 
 Serverless discussion forum built with React, Redux and Firebase using [refire](https://github.com/hoppula/refire) and [refire-app](https://github.com/hoppula/refire-app).
 
-I challenged myself to build as good forum as possible in 37.5 hours (normal work week hours, but split over multiple weekends and nights in this case), version 1.0 is the result.
-
 Base UI components are from excellent [Elemental UI](http://elemental-ui.com/).
 
 ## Live demo
@@ -16,11 +14,31 @@ Base UI components are from excellent [Elemental UI](http://elemental-ui.com/).
 * Paging for boards and threads
 * Quoting when replying to posts
 * Thread and Post previews
-* Markdown support :thumbsup:
-* Emoji support :fire:
+* Markdown support
+* Emoji support using `:emoji:` syntax :fire:
 * User profile pages
 * Login with Google account
 * Admin tools (delete threads & single posts, lock/unlock threads)
+* CSS-in-JS styled components, fully themeable
+* Dark & light color themes
+* Upvoting single posts
+
+## Roadmap
+
+* Allowing boards and threads to be bookmarked properly
+* Search using redux-search
+* Image attachment upload to Firebase
+* More social logins (Facebook, Github & Twitter)
+* Allowing users to edit their own thread titles and posts
+* Single post linking
+* Show list of available emojis
+* Sticky threads
+* Thread and post tagging
+* Notifications
+* Reactions to posts with emojis
+* Improved admin section
+* Moderating
+* User editable theme
 
 ## Deploying your own instance
 
@@ -59,6 +77,14 @@ Create `adminUsers` path in your Firebase and set your admin user's `uid` as key
 You can edit default paging settings by changing `settings/BOARD_PAGE_SIZE`, `settings/THREAD_PAGE_SIZE` and `settings/THREAD_PAGE_LIMIT`.
 
 You can configure date format by changing `settings/DATE_FORMAT`.
+
+## Custom forum name
+
+Export `siteName` in `./src/config.js`.
+
+```js
+export const siteName = "My forum"
+```
 
 ## License
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, styles } from 'refire-app'
-import find from 'lodash/collection/find'
+import find from 'lodash/find'
 
 function findBoard(boards, boardId) {
   return find(boards, (board) => {
