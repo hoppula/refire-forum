@@ -24,9 +24,10 @@
     "posts": {
       ".read": true,
       "$postId": {
-        ".write": "auth !== null && ((!data.exists() && root.child('threads/' + newData.child('threadId').val() + '/locked').val() !== true) || (root.child('adminUsers/' + auth.uid).exists() && !newData.exists()))",
+        ".write": "auth !== null && ((!data.exists() && root.child('threads/' + newData.child('threadId').val() + '/locked').val() !== true) || (root.child('adminUsers/' + auth.uid).exists()))",
         ".validate": "newData.hasChildren(['body', 'createdAt', 'threadId', 'user'])",
         "body": {
+          ".write": "auth !== null && (root.child('posts/' + $postId + '/user/id').val() === auth.uid)",
           ".validate": "newData.isString()"
         },
         "createdAt": {
@@ -55,6 +56,7 @@
           }
         },
         "$other": {
+          ".write": "auth !== null && (root.child('posts/' + $postId + '/user/id').val() == auth.uid)",
           ".validate": false
         }
       }

@@ -48,6 +48,7 @@ class Thread extends Component {
         toggleLocked,
         updateQuote,
         toggleUpvote,
+        saveEditedPost,
       },
     } = this.props
     const { THREAD_PAGE_SIZE, THREAD_PAGE_LIMIT } = settings
@@ -117,6 +118,7 @@ class Thread extends Component {
             deletePost={showDeletePostDialog}
             updateQuote={updateQuote}
             toggleUpvote={toggleUpvote}
+            saveEditedPost={saveEditedPost}
             user={user}
             locked={thread.locked}
             isAdmin={isAdmin}

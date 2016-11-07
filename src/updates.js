@@ -60,9 +60,10 @@ export function toggleThreadLocked({ threadKey, thread }) {
   }
 }
 
-export function replyToThread({ threadKey, text, replyToId, user }) {
+export function replyToThread({ threadKey, text, replyToKey, user }) {
   const ref = firebase.database().ref()
   const postKey = ref.child("posts").push().key
+  replyToKey = replyToKey === undefined ? null : replyToKey
 
   return {
     [`threads/${threadKey}/posts/${postKey}`]: true,
@@ -71,7 +72,7 @@ export function replyToThread({ threadKey, text, replyToId, user }) {
       body: text,
       createdAt: firebase.database.ServerValue.TIMESTAMP,
       threadId: threadKey,
-      replyTo: replyToId,
+      replyTo: replyToKey,
       user: {
         displayName: user.displayName,
         image: user.profileImageURL,
@@ -101,5 +102,11 @@ export function toggleUpvote({ postKey, post, user }) {
   return {
     [`posts/${postKey}/likes/${user.uid}`]: value,
     [`users/${user.uid}/likes/${postKey}`]: value,
+  }
+}
+
+export function savePost({ postKey, text }) {
+  return {
+    [`posts/${postKey}/body`]: text,
   }
 }
