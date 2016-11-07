@@ -3,9 +3,6 @@ import { styles } from 'refire-app'
 import ReactMarkdown from 'react-markdown'
 import CodeBlock from '../App/CodeBlock'
 
-
-
-
 const PostBody = ({
       post,
       hide,
@@ -33,7 +30,6 @@ const PostBody = ({
     )
   }
 }
-
 
 const css = {
   bodyContainer: {

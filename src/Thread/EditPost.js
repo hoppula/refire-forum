@@ -57,13 +57,11 @@ class EditPost extends Component {
       submit(update)
       selectLastPage()
     }
-
     this.setState({ text: "" })
   }
 
   cancel = (event) => {
     event.preventDefault()
-
     this.props.setShowEdit(false)
   }
 
