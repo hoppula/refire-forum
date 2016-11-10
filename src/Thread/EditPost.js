@@ -38,12 +38,14 @@ class EditPost extends Component {
 
   submit = (event) => {
     event.preventDefault()
-    const { user, threadKey, selectLastPage, submit, replyToKey, editing, postKey, setShowEdit } = this.props
+    const { user, threadKey, selectLastPage, submit, replyToKey, editing, postKey, post, setShowEdit } = this.props
 
     if (editing) {
       const update = savePost({
         postKey: postKey,
+        post: post,
         text: this.state.text,
+        user: user,
       })
       submit(update)
       setShowEdit(false)
@@ -130,20 +132,8 @@ const css = {
   userProfile: {
     margin: "0 0 10px 0",
   },
-  profileImage: {
-    borderRadius: "20px",
-    height: "40px",
-    width: "40px",
-    margin: "0 10px 0 0",
-  },
   plusIcon: {
     marginRight: "10px",
-  },
-  hidden: {
-    display: "none",
-  },
-  show: {
-    display: "block",
   },
 }
 

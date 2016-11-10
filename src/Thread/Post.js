@@ -69,7 +69,7 @@ class Post extends Component {
   }
 
   const uid = user ? user.uid : undefined
-  const mine = post.user.id === user.uid
+  const mine = post.user.id === uid
 
   return (
     <Row>
@@ -99,6 +99,7 @@ class Post extends Component {
             user={user}
             threadKey={threadKey}
             postKey={postKey}
+            post={post}
             cancel={this.cancelEditPost}
             showEdit={this.state.showEdit}
             setShowEdit={this.setShowEdit}
@@ -193,6 +194,12 @@ const css = {
   profileContainer: {
     position: "relative",
     textAlign: "center",
+  },
+  profileImage: {
+    borderRadius: "20px",
+    height: "40px",
+    width: "40px",
+    margin: "0 10px 0 0",
   },
   mobileProfileContainer: {
     position: "relative",

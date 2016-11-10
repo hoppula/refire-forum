@@ -24,9 +24,13 @@
     "posts": {
       ".read": true,
       "$postId": {
-        ".write": "auth !== null && ((!data.exists() && root.child('threads/' + newData.child('threadId').val() + '/locked').val() !== true) || (root.child('adminUsers/' + auth.uid).exists()))",
-        ".validate": "newData.hasChildren(['body', 'createdAt', 'threadId', 'user'])",
+         // must be logged on to post
+        ".write": "auth !== null",
+          // can either create a new post or edit an existing post
+         ".validate": " (newData.hasChildren(['body', 'createdAt', 'threadId', 'user'])
+        							|| (newData.hasChildren(['body', 'createdAt', 'threadId', 'user', 'edited', 'editedBy', 'editedLast'])))",
         "body": {
+          //ignored
           ".write": "auth !== null && (root.child('posts/' + $postId + '/user/id').val() === auth.uid)",
           ".validate": "newData.isString()"
         },
@@ -34,14 +38,20 @@
           ".validate": "newData.isNumber()"
         },
         "threadId": {
-          ".validate": "newData.isString()"
+          // can't post to a locked thread
+          ".validate": "newData.isString() && ((root.child('threads/' + newData.val() + '/locked').val() !== true)) "
         },
         "replyTo": {
-          ".validate": "!newData.exists() || newData.isString()"
+          ".validate": "newData.isString()"
         },
         "likes": {
           "$uid" : {
           	".write": "auth !== null && (auth.uid === $uid)"
+          }
+        },
+        "edited": {
+          "$uid" : {
+          	".validate": "auth !== null && (auth.uid === $uid)"
           }
         },
         "user": {
@@ -49,11 +59,19 @@
             ".validate": "newData.isString()"
           },
           "id": {
-            ".validate": "newData.val() === auth.uid"
+            // admins can also edit
+            ".validate": "newData.val() === auth.uid || root.child('adminUsers/' + auth.uid).exists()"
           },
           "image": {
             ".validate": "newData.isString()"
           }
+        },
+        "editedBy": {
+          // Todo what is data type of uid?
+          ".validate": true
+        },
+        "editedLast": {
+          ".validate": "newData.isNumber()"
         },
         "$other": {
           ".write": "auth !== null && (root.child('posts/' + $postId + '/user/id').val() == auth.uid)",

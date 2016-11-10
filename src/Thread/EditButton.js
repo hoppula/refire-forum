@@ -21,8 +21,8 @@ const EditButton = ({ user, isAdmin, mine, onClick, styles }) => {
         </span>
       )
     }
-    return <span />
   }
+  return <span />
 }
 
 const css = {
