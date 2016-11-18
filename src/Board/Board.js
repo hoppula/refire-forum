@@ -9,7 +9,7 @@ import { isUserAdmin } from '../utils'
 
 import NewThreadsAvailable from './NewThreadsAvailable'
 import NewThreadButton from './NewThreadButton'
-import PostNewThread from './PostNewThread'
+import NewThread from './NewThread'
 import Threads from './Threads'
 import ShowPagination from './ShowPagination'
 import SettingsButton from './SettingsButton'
@@ -148,6 +148,14 @@ class Board extends Component {
             nextThreads={boardThreads}
             showNewThreads={this.showNewThreads}
           />
+          <NewThread
+            boardId={boardId}
+            user={user}
+            inputRef={(input) => { this.titleInput = input}}
+            showNewThreads={this.showNewThreads}
+            styles={theme.PostNewThread}
+            theme={theme}
+          />
           <Threads
             boardId={boardId}
             threads={pagedThreads}
@@ -162,14 +170,7 @@ class Board extends Component {
             pageSize={BOARD_PAGE_SIZE}
           />
         </Card>
-        <PostNewThread
-          boardId={boardId}
-          user={user}
-          inputRef={(input) => { this.titleInput = input}}
-          showNewThreads={this.showNewThreads}
-          styles={theme.PostNewThread}
-          theme={theme}
-        />
+
       </div>
     )
   }

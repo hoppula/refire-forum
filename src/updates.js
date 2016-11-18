@@ -1,40 +1,83 @@
 import { firebase } from 'refire-app'
 import includes from 'lodash/includes'
 
-export function newThread({ boardId, topic, text, user }) {
+//export function newThread({ boardId, topic, text, user }) {
+  //const ref = firebase.database().ref()
+  //const threadKey = ref.child("threads").push().key
+  //const postKey = ref.child("posts").push().key
+//
+  //
+//}
+
+export function newThread({ boardId, link, imageUrl, title, topic, description, text, user }) {
   const ref = firebase.database().ref()
   const threadKey = ref.child("threads").push().key
   const postKey = ref.child("posts").push().key
 
-  return {
-    [`boards/${boardId}/threads/${threadKey}`]: true,
-    [`threads/${threadKey}`]: {
-      title: topic,
-      boardId: boardId,
-      createdAt: firebase.database.ServerValue.TIMESTAMP,
-      lastPostAt: firebase.database.ServerValue.TIMESTAMP,
-      user: {
-        displayName: user.displayName,
-        image: user.profileImageURL,
-        id: user.uid,
+  if (link) {
+    return {
+      [`boards/${boardId}/threads/${threadKey}`]: true,
+      [`threads/${threadKey}`]: {
+        title: title,
+        boardId: boardId,
+        createdAt: firebase.database.ServerValue.TIMESTAMP,
+        lastPostAt: firebase.database.ServerValue.TIMESTAMP,
+        user: {
+          displayName: user.displayName,
+          image: user.profileImageURL,
+          id: user.uid,
+        },
+        posts: {
+          [postKey]: true,
+        },
+        link: link,
+        imageUrl: imageUrl || ' ',
+        description: description,
       },
-      posts: {
-        [postKey]: true,
+      [`posts/${postKey}`]: {
+        body: text,
+        createdAt: firebase.database.ServerValue.TIMESTAMP,
+        threadId: threadKey,
+        user: {
+          displayName: user.displayName,
+          image: user.profileImageURL,
+          id: user.uid,
+        },
       },
-    },
-    [`posts/${postKey}`]: {
-      body: text,
-      createdAt: firebase.database.ServerValue.TIMESTAMP,
-      threadId: threadKey,
-      user: {
-        displayName: user.displayName,
-        image: user.profileImageURL,
-        id: user.uid,
-      },
-    },
-    [`users/${user.uid}/threadsStarted/${threadKey}`]: true,
-    [`users/${user.uid}/posts/${postKey}`]: true,
-  }
+      [`users/${user.uid}/threadsStarted/${threadKey}`]: true,
+      [`users/${user.uid}/posts/${postKey}`]: true,
+    }
+  } else {
+      return {
+        [`boards/${boardId}/threads/${threadKey}`]: true,
+        [`threads/${threadKey}`]: {
+          title: topic,
+          boardId: boardId,
+          createdAt: firebase.database.ServerValue.TIMESTAMP,
+          lastPostAt: firebase.database.ServerValue.TIMESTAMP,
+          user: {
+            displayName: user.displayName,
+            image: user.profileImageURL,
+            id: user.uid,
+          },
+          posts: {
+            [postKey]: true,
+          },
+        },
+        [`posts/${postKey}`]: {
+          body: text,
+          createdAt: firebase.database.ServerValue.TIMESTAMP,
+          threadId: threadKey,
+          user: {
+            displayName: user.displayName,
+            image: user.profileImageURL,
+            id: user.uid,
+          },
+        },
+        [`users/${user.uid}/threadsStarted/${threadKey}`]: true,
+        [`users/${user.uid}/posts/${postKey}`]: true,
+      }
+    }
 }
 
 export function deleteThread({ threadKey, thread }) {

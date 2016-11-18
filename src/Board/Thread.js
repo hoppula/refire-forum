@@ -9,12 +9,23 @@ const Thread = ({ threadKey, thread, boardId, styles }) => {
   const locked = thread.locked
     ? <LockIcon />
     : <span />
-
+    const image = thread.link
+      ? <a href={thread.link}><img
+          src={thread.imageUrl}
+          className={styles.threadImage}
+          width={thread.imageWidth || '50px'}
+        /></a>
+      : <CommentsIcon
+          size="50px"
+          color="#eeeeee"
+          className={styles.comment}
+        />
   return (
     <div className={styles.threadContainer} key={threadKey}>
       <Link to={`/board/${boardId}/${threadKey}`} className={styles.title}>
-        {thread.title}
-      </Link>
+            {image}
+            {thread.title}
+        </Link>
       <div className={styles.metaContainer}>
         <div className={styles.lockedContainer}>
           {locked}
@@ -39,6 +50,12 @@ const Thread = ({ threadKey, thread, boardId, styles }) => {
 }
 
 const css = {
+  threadImage: {
+    margin: "10px",
+  },
+  comment: {
+    margin: "10px",
+  },
   threadContainer: {
     position: "relative",
     padding: "15px 0",
@@ -49,8 +66,8 @@ const css = {
   },
   title: {
     margin: "0",
-    paddingRight: "100px",
-    fontWeight: 500,
+    paddingRight: "50px",
+    fontWeight: 300,
     display: "block",
   },
   image: {

@@ -3,6 +3,7 @@ import { styles } from 'refire-app'
 import { FormField, FormInput } from 'elemental'
 
 const TextFields = ({
+  visible,
   preview,
   inputRef,
   topic,
@@ -11,7 +12,7 @@ const TextFields = ({
   updateText,
   styles,
 }) => {
-  if (preview) {
+  if (preview || !visible) {
     return <div />
   } else {
     return (

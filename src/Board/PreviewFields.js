@@ -5,11 +5,12 @@ import CodeBlock from '../App/CodeBlock'
 
 const PreviewFields = ({
   preview,
+  visible,
   topic,
   text,
   styles,
 }) => {
-  if (preview) {
+  if (preview && visible) {
     if (!topic.length && !text.length) {
       return (
         <div>

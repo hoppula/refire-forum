@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { styles } from 'refire-app'
-import { Card } from 'elemental'
+import { Card, Row, Col } from 'elemental'
 import LockIcon from 'react-icons/lib/fa/lock'
+import FAComment from 'react-icons/lib/fa/comment'
 
 import ReplyToThread from './ReplyToThread'
 import Posts from './Posts'
@@ -55,7 +56,24 @@ class Thread extends Component {
     const locked = thread.locked
       ? <LockIcon size="22px" />
       : <span />
-
+    const image = thread.link
+      ? <a href={thread.link}><img
+          src={thread.imageUrl}
+          className={styles.image}
+          width={thread.imageWidth || '125px'}
+        /></a>
+      : <FAComment
+          size="100px"
+          color="#eeeeee"
+          className={styles.comment}
+        />
+      const titleTag = thread.title.length > 30
+        ? <h3 className={styles.header}>
+            <a href={thread.link}>{thread.title}</a>
+          </h3>
+        : <h2 className={styles.header}>
+            <a href={thread.link}>{thread.title}</a>
+          </h2>
     return (
       <div>
         <DeleteDialog
@@ -85,9 +103,19 @@ class Thread extends Component {
               <div className={styles.lockContainer}>
                 {locked}
               </div>
-              <h2 className={styles.header}>
-                {thread.title}
-              </h2>
+              <Row>
+                <Col sm="1/4">
+                  {image}
+                </Col>
+                <Col sm="3/4">
+                  <Row>
+                    {titleTag}
+                  </Row>
+                  <Row>
+                    {thread.description}
+                  </Row>
+                </Col>
+              </Row>
             </div>
             <TopToolbar
               isAdmin={isAdmin}
@@ -151,7 +179,19 @@ class Thread extends Component {
 }
 
 const css = {
+  image: {
+    margin: "10px",
+  },
+  comment: {
+    margin: "10px",
+  },
   container: {},
+  headerContainer: {
+    borderBottomStyle: "solid",
+    borderBottomWidth: "1px",
+    borderBottomColor: "#eeeeee",
+    marginBottom: "1em",
+  },
   header: {
     minHeight: "28px",
     margin: "0em 0 1em 0",
