@@ -6,9 +6,9 @@ const TextFields = ({
   visible,
   preview,
   inputRef,
-  topic,
+  title,
   text,
-  updateTopic,
+  updateTitle,
   updateText,
   styles,
 }) => {
@@ -21,9 +21,9 @@ const TextFields = ({
           <FormInput
             ref={inputRef}
             placeholder="New topic"
-            value={topic}
-            onChange={updateTopic}
-            className={styles.topic}
+            value={title}
+            onChange={updateTitle}
+            className={styles.title}
           />
         </FormField>
         <FormField>
@@ -41,7 +41,7 @@ const TextFields = ({
 }
 
 const css = {
-  topic: {},
+  title: {},
   text: {},
 }
 

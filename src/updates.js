@@ -1,15 +1,7 @@
 import { firebase } from 'refire-app'
 import includes from 'lodash/includes'
 
-//export function newThread({ boardId, topic, text, user }) {
-  //const ref = firebase.database().ref()
-  //const threadKey = ref.child("threads").push().key
-  //const postKey = ref.child("posts").push().key
-//
-  //
-//}
-
-export function newThread({ boardId, link, imageUrl, title, topic, description, text, user }) {
+export function newThread({ boardId, link, imageUrl, title, description, text, user }) {
   const ref = firebase.database().ref()
   const threadKey = ref.child("threads").push().key
   const postKey = ref.child("posts").push().key
@@ -31,7 +23,7 @@ export function newThread({ boardId, link, imageUrl, title, topic, description, 
           [postKey]: true,
         },
         link: link,
-        imageUrl: imageUrl || ' ',
+        imageUrl: imageUrl,
         description: description,
       },
       [`posts/${postKey}`]: {
@@ -51,7 +43,7 @@ export function newThread({ boardId, link, imageUrl, title, topic, description, 
       return {
         [`boards/${boardId}/threads/${threadKey}`]: true,
         [`threads/${threadKey}`]: {
-          title: topic,
+          title: title,
           boardId: boardId,
           createdAt: firebase.database.ServerValue.TIMESTAMP,
           lastPostAt: firebase.database.ServerValue.TIMESTAMP,

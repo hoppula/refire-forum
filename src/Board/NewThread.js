@@ -31,7 +31,6 @@ class NewThread extends Component {
   constructor(props, context) {
     super(props, context)
     this.state = {
-      topic: "",
       title: "",
       text: "",
       link: "",
@@ -63,7 +62,7 @@ class NewThread extends Component {
       newThread({
         boardId,
         user,
-        topic: this.state.topic,
+        title: this.state.title,
         text: this.state.text,
       })
 
@@ -77,7 +76,7 @@ class NewThread extends Component {
       link: "",
       title: "",
       imageUrl: "",
-      topic: "",
+      title: "",
       text: "",
     })
   }
@@ -85,7 +84,7 @@ class NewThread extends Component {
   updateField = (field) => {
     return (event) => {
        event.preventDefault()
-       const value = field === 'topic' || field === 'title'
+       const value = field === 'title' || field === 'title'
         ? event.target.value.substring(0, maxTitleLength)
         : event.target.value
 
@@ -112,7 +111,7 @@ class NewThread extends Component {
       loadedLink: false,
     })
 
-    let yql = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('SELECT * FROM html WHERE url = ') + '%27' + encodeURIComponent(this.state.link) +  '%27' + encodeURIComponent(' AND xpath=') + '%27' + encodeURIComponent('descendant-or-self::meta') + '%27' + '&format=json&diagnostics=true'
+    let yql = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('SELECT * FROM html WHERE url = ') + '%27' + encodeURIComponent(this.state.link) +  '%27' + encodeURIComponent(' AND xpath=') + '%27' + encodeURIComponent('//title|descendant-or-self::meta') + '%27' + '&format=json&diagnostics=true'
 
     const _this = this
 
@@ -133,6 +132,10 @@ class NewThread extends Component {
          if (items[i].property === 'og:description') {
            description = items[i].content
          }
+       }
+
+       if (!title) {
+         title = o.query.results.title | 'No page title found'
        }
 
        _this.setState({
@@ -168,7 +171,7 @@ class NewThread extends Component {
       showLinkFields: false,
       showTextFields: true,
       previewEnabled: false,
-      topic: "",
+      title: "",
       text: "",
       link: "",
       imageUrl: "",
@@ -178,23 +181,24 @@ class NewThread extends Component {
 
   render() {
     const { user, styles, theme, inputRef } = this.props
-    const submitEnabled = ((this.state.topic || this.state.title) && this.state.text)
+    const submitEnabled = ((this.state.title || this.state.title) && this.state.text)
 
-    const buttons = this.state.showLinkFields || this.state.showTextFields ?
-    (<div><Button
-      disabled={!submitEnabled}
-      type="success"
-      onClick={this.submit}
-      >
-        <PlusIcon
-          className={styles.plusIcon}
-          /> Post new thread
-      </Button>
-      <PreviewButton
-        enabled={this.state.previewEnabled}
-        togglePreview={this.togglePreview}
-      /></div>) :
-      ( <div></div> )
+    const buttons = this.state.showLinkFields || this.state.showTextFields
+      ? (<div>
+          <Button
+            disabled={!submitEnabled}
+            type="success"
+            onClick={this.submit}
+          >
+            <PlusIcon
+              className={styles.plusIcon}
+            /> Post new thread
+          </Button>
+          <PreviewButton
+            enabled={this.state.previewEnabled}
+            togglePreview={this.togglePreview}
+          /></div>)
+      : ( <div></div> )
 
     if (!user) return <div />
     return (
@@ -241,16 +245,16 @@ class NewThread extends Component {
             visible={this.state.showTextFields}
             preview={this.state.previewEnabled}
             inputRef={inputRef}
-            topic={this.state.topic}
+            title={this.state.title}
             text={this.state.text}
-            updateTopic={this.updateField("topic")}
+            updateTitle={this.updateField("title")}
             updateText={this.updateField("text")}
             styles={theme.TextFields}
           />
           <PreviewFields
             preview={this.state.previewEnabled}
             visible={this.state.showTextFields}
-            topic={this.state.topic}
+            title={this.state.title}
             text={this.state.text}
             styles={theme.PreviewFields}
           />

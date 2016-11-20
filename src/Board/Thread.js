@@ -2,6 +2,9 @@ import React from 'react'
 import { Link, styles } from 'refire-app'
 import LockIcon from 'react-icons/lib/fa/lock'
 import CommentsIcon from 'react-icons/lib/fa/comments'
+import FAComment from 'react-icons/lib/fa/comment'
+import FaChain from 'react-icons/lib/fa/chain'
+import { Row, Col } from 'elemental'
 import { fromNow } from '../utils'
 
 const Thread = ({ threadKey, thread, boardId, styles }) => {
@@ -9,22 +12,36 @@ const Thread = ({ threadKey, thread, boardId, styles }) => {
   const locked = thread.locked
     ? <LockIcon />
     : <span />
-    const image = thread.link
-      ? <a href={thread.link}><img
-          src={thread.imageUrl}
-          className={styles.threadImage}
-          width={thread.imageWidth || '50px'}
-        /></a>
-      : <CommentsIcon
+    const defaultImage = thread.link
+      ? (<FaChain
           size="50px"
           color="#eeeeee"
           className={styles.comment}
+        />)
+      : (<FAComment
+          size="50px"
+          color="#eeeeee"
+          className={styles.comment}
+        />)
+    const image = thread.imageUrl
+      ? <img
+          src={thread.imageUrl}
+          className={styles.threadImage}
+          width={thread.imageWidth || '50px'}
         />
+      : <div>{defaultImage}</div>
+
   return (
     <div className={styles.threadContainer} key={threadKey}>
       <Link to={`/board/${boardId}/${threadKey}`} className={styles.title}>
+        <Row>
+          <Col sm="1/8">
             {image}
-            {thread.title}
+            </Col>
+            <Col sm="7/8">
+              {thread.title}
+            </Col>
+          </Row>
         </Link>
       <div className={styles.metaContainer}>
         <div className={styles.lockedContainer}>
@@ -37,7 +54,7 @@ const Thread = ({ threadKey, thread, boardId, styles }) => {
         </div>
         <Link to={`/board/${boardId}/${threadKey}`} className={styles.commentsContainer}>
           <span className={styles.commentsCount}>
-            {Object.keys(thread.posts).length - 1}
+            {Object.keys(thread.posts).length - 1 || 0}
           </span>
           <CommentsIcon />
         </Link>

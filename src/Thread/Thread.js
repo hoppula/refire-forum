@@ -3,6 +3,7 @@ import { styles } from 'refire-app'
 import { Card, Row, Col } from 'elemental'
 import LockIcon from 'react-icons/lib/fa/lock'
 import FAComment from 'react-icons/lib/fa/comment'
+import FaChain from 'react-icons/lib/fa/chain'
 
 import ReplyToThread from './ReplyToThread'
 import Posts from './Posts'
@@ -56,24 +57,36 @@ class Thread extends Component {
     const locked = thread.locked
       ? <LockIcon size="22px" />
       : <span />
-    const image = thread.link
+    const defaultImage = thread.link
+      ? (<FaChain
+          size="100px"
+          color="#eeeeee"
+          className={styles.comment}
+        />)
+      : (<FAComment
+          size="100px"
+          color="#eeeeee"
+          className={styles.comment}
+        />)
+    const image = thread.imageUrl
       ? <a href={thread.link}><img
           src={thread.imageUrl}
           className={styles.image}
           width={thread.imageWidth || '125px'}
         /></a>
-      : <FAComment
-          size="100px"
-          color="#eeeeee"
-          className={styles.comment}
-        />
-      const titleTag = thread.title.length > 30
-        ? <h3 className={styles.header}>
-            <a href={thread.link}>{thread.title}</a>
-          </h3>
-        : <h2 className={styles.header}>
-            <a href={thread.link}>{thread.title}</a>
-          </h2>
+      : <div>{defaultImage}</div>
+
+    const title = thread.link
+      ? <a href={thread.link}>{thread.title}</a>
+      : <span>{thread.title}</span>
+
+    const titleTag = thread.title.length > 30
+      ? <h3 className={styles.header}>
+          {title}
+        </h3>
+      : <h2 className={styles.header}>
+          {title}
+        </h2>
     return (
       <div>
         <DeleteDialog
@@ -112,7 +125,7 @@ class Thread extends Component {
                     {titleTag}
                   </Row>
                   <Row>
-                    {thread.description}
+                    {thread.description || ' '}
                   </Row>
                 </Col>
               </Row>
