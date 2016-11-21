@@ -153,6 +153,7 @@ class Board extends Component {
             threads={pagedThreads}
             loaded={!!boardThreads}
             theme={theme}
+            styles={theme.Threads}
           />
           <ShowPagination
             currentPage={this.state.currentPage}

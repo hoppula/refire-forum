@@ -1,0 +1,138 @@
+// Helper methods
+currentUser() { auth.uid }
+isLoggedIn() { auth != null }
+isCurrentUser(uid) { isLoggedIn() && currentUser() == uid }
+isAdmin() { isLoggedIn() && prior(root).adminUsers[auth.uid] != null }
+isThreadOpen(threadId) { prior(root).threads[threadId].locked != true }
+
+// Types
+type CurrentUserId {
+  validate() { isLoggedIn() && this === currentUser() }
+}
+
+type Timestamp extends Number {
+  validate() { this <= now }
+}
+
+type UserMeta {
+  displayName: String,
+  id: CurrentUserId,
+  image: String
+}
+
+type Settings {
+  theme: String
+}
+
+type User {
+  displayName: String,
+  lastLoginAt: Timestamp,
+  profileImageURL: String,
+  provider: String,
+  registeredAt: Number,
+  email: String | Null,
+  settings: Settings | Null
+}
+
+type Post {
+  body: String,
+  createdAt: Timestamp,
+  threadId: String, // TODO: create helper method & type that check threadId validity
+  replyTo: String | Null,
+  user: UserMeta
+}
+
+type Thread {
+  boardId: String, // TODO: create helper method & type that check boardId validity
+  createdAt: Timestamp,
+  lastPostAt: Timestamp,
+  locked: Boolean | Null,
+  title: String,
+  user: UserMeta
+}
+
+// Admin users
+path /adminUsers {
+  read() { isLoggedIn() }
+  write() { false }
+}
+
+// Boards
+path /boards {
+  read() { true }
+  /{boardId}/threads/{threadId} is Boolean {
+    create() { isLoggedIn() }
+    delete() { isAdmin() }
+  }
+  index() { [ "active" ] }
+}
+
+// Categories
+path /categories {
+  read() { true }
+  write() { false }
+  index() { [ "active" ] }
+}
+
+// Posts
+path /posts {
+  read() { true }
+  /{postId} is Post {
+    create() { isLoggedIn() && isThreadOpen(this.threadId) }
+    delete() { isAdmin() }
+
+    /likes/{uid} is Boolean {
+      write() { isCurrentUser(uid) }
+    }
+  }
+}
+
+// Threads
+path /threads {
+  read() { true }
+  /{threadId} is Thread {
+    create() { isLoggedIn() }
+    update() { isAdmin() }
+    delete() { isAdmin() }
+
+    // updating other fields is only allowed for admin but
+    // we need to allow updating lastPostAt for logged in users
+    /lastPostAt {
+      write() { isLoggedIn() }
+    }
+
+    /posts/{postId} is Boolean {
+      create() { isLoggedIn() && prior(root).posts[postId] == null }
+      delete() { isAdmin() }
+    }
+
+  }
+}
+
+// Users
+// TODO: more fine-grained permissions
+path /users/{uid} is User {
+  read() { true }
+  write() { isCurrentUser(uid) || isAdmin() }
+
+  /posts/{postId} is Boolean {
+    // TODO: these currently have no effect as write is already allowed
+    // for current user & admin
+    create() { isCurrentUser(uid) }
+    delete() { isAdmin() }
+  }
+
+  /threadsStarted/{threadId} is Boolean {}
+
+  /likes/{postId} is Boolean {
+    // TODO: this currently has no effect as write is already allowed
+    // for current user & admin
+    write() { isCurrentUser(uid) }
+  }
+}
+
+// Settings
+path /settings {
+  read() { true }
+  write() { false }
+}

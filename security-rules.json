@@ -1,151 +1,124 @@
 {
   "rules": {
     "adminUsers": {
-      ".read": "auth !== null",
-      ".write": false
+      ".read": "auth != null"
     },
     "boards": {
-      ".read": true,
       "$boardId": {
         "threads": {
           "$threadId": {
-            ".write": "auth !== null && (!data.exists() || (root.child('adminUsers/' + auth.uid).exists() && !newData.exists()))",
-            ".validate": "newData.isBoolean()"
+            ".validate": "newData.isBoolean()",
+            ".write": "data.val() == null && auth != null || data.val() != null && newData.val() == null && (auth != null && root.child('adminUsers').child(auth.uid).val() != null)"
           }
         }
       },
-      ".indexOn": ["active"]
+      ".read": "true",
+      ".indexOn": [
+        "active"
+      ]
     },
     "categories": {
-      ".read": true,
-      ".write": false,
-      ".indexOn": ["active"]
+      ".read": "true",
+      ".indexOn": [
+        "active"
+      ]
     },
     "posts": {
-      ".read": true,
       "$postId": {
-         // must be logged on to post
-        ".write": "auth !== null",
-          // can either create a new post or edit an existing post
-         ".validate": " (newData.hasChildren(['body', 'createdAt', 'threadId', 'user'])
-        							|| (newData.hasChildren(['body', 'createdAt', 'threadId', 'user', 'edited', 'editedBy', 'editedLast'])))",
+        "likes": {
+          "$uid": {
+            ".validate": "newData.isBoolean()",
+            ".write": "auth != null && auth.uid == $uid"
+          }
+        },
+        ".validate": "newData.hasChildren(['body', 'createdAt', 'threadId', 'user'])",
         "body": {
-          //ignored
-          ".write": "auth !== null && (root.child('posts/' + $postId + '/user/id').val() === auth.uid)",
           ".validate": "newData.isString()"
         },
         "createdAt": {
-          ".validate": "newData.isNumber()"
+          ".validate": "newData.isNumber() && newData.val() <= now"
         },
         "threadId": {
-          // can't post to a locked thread
-          ".validate": "newData.isString() && ((root.child('threads/' + newData.val() + '/locked').val() !== true)) "
+          ".validate": "newData.isString()"
         },
         "replyTo": {
           ".validate": "newData.isString()"
         },
-        "likes": {
-          "$uid" : {
-          	".write": "auth !== null && (auth.uid === $uid)"
-          }
-        },
-        "edited": {
-          "$uid" : {
-          	".validate": "auth !== null && (auth.uid === $uid)"
-          }
-        },
         "user": {
+          ".validate": "newData.hasChildren(['displayName', 'id', 'image'])",
           "displayName": {
             ".validate": "newData.isString()"
           },
           "id": {
-            // admins can also edit
-            ".validate": "newData.val() === auth.uid || root.child('adminUsers/' + auth.uid).exists()"
+            ".validate": "auth != null && newData.val() == auth.uid"
           },
           "image": {
             ".validate": "newData.isString()"
+          },
+          "$other": {
+            ".validate": "false"
           }
         },
-        "editedBy": {
-          // Todo what is data type of uid?
-          ".validate": true
-        },
-        "editedLast": {
-          ".validate": "newData.isNumber()"
-        },
         "$other": {
-          ".write": "auth !== null && (root.child('posts/' + $postId + '/user/id').val() == auth.uid)",
-          ".validate": false
-        }
-      }
+          ".validate": "false"
+        },
+        ".write": "data.val() == null && auth != null && root.child('threads').child(newData.child('threadId').val()).child('locked').val() != true || data.val() != null && newData.val() == null && (auth != null && root.child('adminUsers').child(auth.uid).val() != null)"
+      },
+      ".read": "true"
     },
     "threads": {
-      ".read": true,
       "$threadId": {
-        ".write": "(auth !== null && auth.uid === newData.child('user/id').val() && newData.exists()) || root.child('adminUsers/' + auth.uid).exists()",
-        ".validate": "newData.hasChildren(['boardId', 'createdAt', 'lastPostAt', 'posts', 'title', 'user'])",
-        "boardId": {
-          ".validate": "newData.isString() && !data.exists()"
-        },
-        "createdAt": {
-          ".validate": "newData.isNumber() && !data.exists()"
-        },
         "lastPostAt": {
-          ".validate": "newData.isNumber()",
-          ".write": "auth !== null"
-        },
-        "locked": {
-          ".validate": "newData.isBoolean()",
-          ".write": "root.child('adminUsers/' + auth.uid).exists()"
-        },
-        "posts": {
-          "$postId": {
-            ".validate": "newData.isBoolean() && !data.exists()",
-            ".write": "(auth !== null && !root.child('posts/' + $postId).exists() && newData.exists()) || (root.child('adminUsers/' + auth.uid).exists() && !newData.exists())"
-          }
-        },
-        "title": {
-          ".validate": "newData.isString() && !data.exists()"
-        },
-        "user": {
-          "displayName": {
-            ".validate": "newData.isString() && !data.exists()"
-          },
-          "id": {
-            ".validate": "newData.val() === auth.uid && !data.exists()"
-          },
-          "image": {
-            ".validate": "newData.isString() && !data.exists()"
-          }
-        },
-        "$other": {
-          ".validate": false
-        }
-      }
-    },
-    "users": {
-      "$uid": {
-        ".write": "(auth !== null && auth.uid === $uid) || root.child('adminUsers/' + auth.uid).exists()",
-        ".read": true,
-        "displayName": {
-          ".validate": "newData.isString()"
-        },
-        "lastLoginAt": {
-          ".validate": "newData.isNumber()"
-        },
-        "profileImageUrl": {
-          ".validate": "newData.isString()"
-        },
-        "provider": {
-          ".validate": "newData.isString()"
-        },
-        "registeredAt": {
-          ".validate": "newData.isNumber()"
+          ".validate": "newData.isNumber() && newData.val() <= now",
+          ".write": "auth != null"
         },
         "posts": {
           "$postId": {
             ".validate": "newData.isBoolean()",
-            ".write": "(auth !== null && auth.uid === $uid) || (root.child('adminUsers/' + auth.uid).exists() && !newData.exists())"
+            ".write": "data.val() == null && auth != null && root.child('posts').child($postId).val() == null || data.val() != null && newData.val() == null && (auth != null && root.child('adminUsers').child(auth.uid).val() != null)"
+          }
+        },
+        ".validate": "newData.hasChildren(['boardId', 'createdAt', 'lastPostAt', 'title', 'user'])",
+        "boardId": {
+          ".validate": "newData.isString()"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber() && newData.val() <= now"
+        },
+        "locked": {
+          ".validate": "newData.isBoolean()"
+        },
+        "title": {
+          ".validate": "newData.isString()"
+        },
+        "user": {
+          ".validate": "newData.hasChildren(['displayName', 'id', 'image'])",
+          "displayName": {
+            ".validate": "newData.isString()"
+          },
+          "id": {
+            ".validate": "auth != null && newData.val() == auth.uid"
+          },
+          "image": {
+            ".validate": "newData.isString()"
+          },
+          "$other": {
+            ".validate": "false"
+          }
+        },
+        "$other": {
+          ".validate": "false"
+        },
+        ".write": "data.val() == null && auth != null || data.val() != null && newData.val() != null && (auth != null && root.child('adminUsers').child(auth.uid).val() != null) || data.val() != null && newData.val() == null && (auth != null && root.child('adminUsers').child(auth.uid).val() != null)"
+      },
+      ".read": "true"
+    },
+    "users": {
+      "$uid": {
+        "posts": {
+          "$postId": {
+            ".validate": "newData.isBoolean()",
+            ".write": "data.val() == null && (auth != null && auth.uid == $uid) || data.val() != null && newData.val() == null && (auth != null && root.child('adminUsers').child(auth.uid).val() != null)"
           }
         },
         "threadsStarted": {
@@ -154,15 +127,48 @@
           }
         },
         "likes": {
-          "$postId" : {
-          	".write": "auth !== null && (auth.uid === $uid)"
+          "$postId": {
+            ".validate": "newData.isBoolean()",
+            ".write": "auth != null && auth.uid == $uid"
           }
-        }
+        },
+        ".validate": "newData.hasChildren(['displayName', 'lastLoginAt', 'profileImageURL', 'provider', 'registeredAt'])",
+        "displayName": {
+          ".validate": "newData.isString()"
+        },
+        "lastLoginAt": {
+          ".validate": "newData.isNumber() && newData.val() <= now"
+        },
+        "profileImageURL": {
+          ".validate": "newData.isString()"
+        },
+        "provider": {
+          ".validate": "newData.isString()"
+        },
+        "registeredAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "email": {
+          ".validate": "newData.isString()"
+        },
+        "settings": {
+          ".validate": "newData.hasChildren() && newData.hasChildren(['theme'])",
+          "theme": {
+            ".validate": "newData.isString()"
+          },
+          "$other": {
+            ".validate": "false"
+          }
+        },
+        "$other": {
+          ".validate": "false"
+        },
+        ".read": "true",
+        ".write": "auth != null && auth.uid == $uid || auth != null && root.child('adminUsers').child(auth.uid).val() != null"
       }
     },
     "settings": {
-      ".read": true,
-      ".write": false
+      ".read": "true"
     }
   }
 }

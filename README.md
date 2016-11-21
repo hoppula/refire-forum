@@ -86,6 +86,14 @@ Export `siteName` in `./src/config.js`.
 export const siteName = "My forum"
 ```
 
+## Security rules
+
+Firebase security rules are defined in `security-rules.bolt`.
+
+Use `npm run build:rules` to generate `security-rules.json` after making changes.
+
+Use `npm run deploy:rules` to deploy security rules.
+
 ## License
 
 MIT

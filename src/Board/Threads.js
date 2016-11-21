@@ -14,7 +14,7 @@ const Threads = ({ boardId, threads, loaded, styles, theme }) => {
       )
     } else {
       return (
-        <div>
+        <div className={styles.noThreadsYet}>
           No threads here yet
         </div>
       )
@@ -43,6 +43,7 @@ const css = {
   spinnerContainer: {
     padding: "30px 0",
   },
+  noThreadsYet: {},
 }
 
 export default styles(css, Threads)

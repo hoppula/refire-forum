@@ -7,8 +7,9 @@
   "scripts": {
     "clean": "rimraf dist",
     "start": "node devServer.js",
+    "build:rules": "firebase-bolt security-rules.bolt",
     "build:webpack": "NODE_ENV=production webpack --config webpack.config.prod.js",
-    "build": "npm run clean && npm run build:webpack && npm run html",
+    "build": "npm run clean && npm run build:webpack && npm run build:rules && npm run html",
     "html": "cp index.html dist/index.html",
     "login": "firebase login",
     "bootstrap": "firebase database:set / bootstrap.json",
@@ -53,6 +54,7 @@
     "express": "^4.14.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
+    "firebase-bolt": "^0.8.1",
     "firebase-tools": "^3.1.0",
     "json-loader": "^0.5.4",
     "less": "^2.7.1",

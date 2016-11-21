@@ -1,31 +1,37 @@
+const bgColor = "#333"
+const textColor = "#999"
+const buttonBgColor = "#000"
+const buttonTextColor = "#fff"
+const linkColor = "#fff"
+
 const buttonStyles = {
-  background: "#000",
-  border: "1px solid #333",
-  color: "#fff",
+  background: buttonBgColor,
+  border: `1px solid ${bgColor}`,
+  color: buttonTextColor,
   textShadow: "none",
   "&:hover": {
-    background: "#333",
+    background: bgColor,
     border: "1px solid #555",
-    color: "#fff",
+    color: linkColor,
   },
 }
 
 const linkStyles = {
-  color: "#fff",
+  color: linkColor,
   "&:hover, &:active, &:focus": {
-    color: "#fff",
+    color: linkColor,
   },
 }
 
 const dialogStyles = {
   container: {
     "& .Modal-content": {
-      backgroundColor: "#333",
+      backgroundColor: bgColor,
     },
   },
   modal: {
-    background: "#333",
-    color: "#999",
+    background: bgColor,
+    color: textColor,
   },
 }
 
@@ -40,8 +46,8 @@ export default {
     },
     Footer: {
       container: {
-        background: "#333",
-        color: "#999",
+        background: bgColor,
+        color: textColor,
       },
     },
     TopBar: {
@@ -63,10 +69,10 @@ export default {
   Categories: {
     Categories: {
       category: {
-        background: "#333",
+        background: bgColor,
       },
       header: {
-        color: "#999",
+        color: textColor,
       },
     },
     Boards: {
@@ -76,10 +82,10 @@ export default {
   Board: {
     Board: {
       container: {
-        background: "#333",
+        background: bgColor,
       },
       header: {
-        color: "#999",
+        color: textColor,
       },
     },
     BoardSettings: {
@@ -88,7 +94,12 @@ export default {
     Thread: {
       title: linkStyles,
       threadContainer: {
-        color: "#fff",
+        color: linkColor,
+      },
+    },
+    Threads: {
+      noThreadsYet: {
+        color: textColor,
       },
     },
     SettingsButton: {
@@ -99,39 +110,39 @@ export default {
     },
     PostNewThread: {
       container: {
-        background: "#333",
+        background: bgColor,
       },
       displayName: {
-        color: "#fff",
+        color: linkColor,
       },
     },
     PreviewFields: {
       topicPreview: {
-        color: "#fff",
+        color: linkColor,
       },
       textPreview: {
-        color: "#fff",
+        color: linkColor,
       },
     },
     TextFields: {
       topic: {
-        background: "#333",
-        color: "#fff",
+        background: bgColor,
+        color: linkColor,
       },
       text: {
-        background: "#333",
-        color: "#fff",
+        background: bgColor,
+        color: linkColor,
       },
     },
   },
   Profile: {
     Profile: {
       container: {
-        background: "#333",
-        color: "#fff",
+        background: bgColor,
+        color: linkColor,
       },
       header: {
-        color: "#999",
+        color: textColor,
       },
     },
     ThreadsStarted: {
@@ -141,32 +152,32 @@ export default {
   Thread: {
     Thread: {
       container: {
-        background: "#333",
+        background: bgColor,
       },
       header: {
-        color: "#999",
+        color: textColor,
       },
       lockContainer: {
-        color: "#fff",
+        color: linkColor,
       },
     },
     ReplyToThread: {
       container: {
-        background: "#333",
+        background: bgColor,
       },
       displayName: {
-        color: "#fff",
+        color: textColor,
       },
     },
     PreviewFields: {
       textPreview: {
-        color: "#fff",
+        color: linkColor,
       },
     },
     TextFields: {
       text: {
-        background: "#333",
-        color: "#fff",
+        background: bgColor,
+        color: linkColor,
       },
     },
     Post: {
@@ -174,28 +185,28 @@ export default {
         background: "#444",
       },
       bodyContainer: {
-        color: "#fff",
+        color: linkColor,
       },
       nameContainer: {
-        color: "#fff",
+        color: linkColor,
       },
       postDate: {
-        color: "#fff",
+        color: linkColor,
       },
     },
     DeletePostButton: {
       button: {
-        color: "#fff",
+        color: linkColor,
       },
     },
     ReplyButton: {
       button: {
-        color: "#fff",
+        color: linkColor,
       },
     },
     QuoteButton: {
       button: {
-        color: "#fff",
+        color: linkColor,
       },
     },
     DeletePostDialog: {
