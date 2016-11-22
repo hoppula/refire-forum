@@ -54,7 +54,7 @@ const Thread = ({ threadKey, thread, boardId, styles }) => {
         </div>
         <Link to={`/board/${boardId}/${threadKey}`} className={styles.commentsContainer}>
           <span className={styles.commentsCount}>
-            {Object.keys(thread.posts).length - 1 || 0}
+            {Object.keys(thread.posts).length - 1}
           </span>
           <CommentsIcon />
         </Link>

@@ -5,11 +5,23 @@ export function newThread({ boardId, link, imageUrl, title, description, text, u
   const ref = firebase.database().ref()
   const threadKey = ref.child("threads").push().key
   const postKey = ref.child("posts").push().key
-
+  let retval = {
+    [`boards/${boardId}/threads/${threadKey}`]: true,
+    [`posts/${postKey}`]: {
+      body: text,
+      createdAt: firebase.database.ServerValue.TIMESTAMP,
+      threadId: threadKey,
+      user: {
+        displayName: user.displayName,
+        image: user.profileImageURL,
+        id: user.uid,
+      },
+    },
+    [`users/${user.uid}/threadsStarted/${threadKey}`]: true,
+    [`users/${user.uid}/posts/${postKey}`]: true,
+  }
   if (link) {
-    return {
-      [`boards/${boardId}/threads/${threadKey}`]: true,
-      [`threads/${threadKey}`]: {
+    retval[`threads/${threadKey}`] = {
         title: title,
         boardId: boardId,
         createdAt: firebase.database.ServerValue.TIMESTAMP,
@@ -23,26 +35,15 @@ export function newThread({ boardId, link, imageUrl, title, description, text, u
           [postKey]: true,
         },
         link: link,
-        imageUrl: imageUrl,
-        description: description,
-      },
-      [`posts/${postKey}`]: {
-        body: text,
-        createdAt: firebase.database.ServerValue.TIMESTAMP,
-        threadId: threadKey,
-        user: {
-          displayName: user.displayName,
-          image: user.profileImageURL,
-          id: user.uid,
-        },
-      },
-      [`users/${user.uid}/threadsStarted/${threadKey}`]: true,
-      [`users/${user.uid}/posts/${postKey}`]: true,
+    }
+    if (description) {
+      retval[`threads/${threadKey}`].description = description
+    }
+    if (imageUrl) {
+      retval[`threads/${threadKey}`].imageUrl = imageUrl
     }
   } else {
-      return {
-        [`boards/${boardId}/threads/${threadKey}`]: true,
-        [`threads/${threadKey}`]: {
+      retval[`threads/${threadKey}`] = {
           title: title,
           boardId: boardId,
           createdAt: firebase.database.ServerValue.TIMESTAMP,
@@ -55,21 +56,10 @@ export function newThread({ boardId, link, imageUrl, title, description, text, u
           posts: {
             [postKey]: true,
           },
-        },
-        [`posts/${postKey}`]: {
-          body: text,
-          createdAt: firebase.database.ServerValue.TIMESTAMP,
-          threadId: threadKey,
-          user: {
-            displayName: user.displayName,
-            image: user.profileImageURL,
-            id: user.uid,
-          },
-        },
-        [`users/${user.uid}/threadsStarted/${threadKey}`]: true,
-        [`users/${user.uid}/posts/${postKey}`]: true,
-      }
+        }
     }
+
+    return retval
 }
 
 export function deleteThread({ threadKey, thread }) {

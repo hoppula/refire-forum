@@ -8,7 +8,6 @@ import find from 'lodash/find'
 import { isUserAdmin } from '../utils'
 
 import NewThreadsAvailable from './NewThreadsAvailable'
-import NewThreadButton from './NewThreadButton'
 import NewThread from './NewThread'
 import Threads from './Threads'
 import ShowPagination from './ShowPagination'
@@ -24,10 +23,6 @@ class Board extends Component {
       threads: null,
       settingsVisible: false,
     }
-    this.handlePageSelect = this.handlePageSelect.bind(this)
-    this.focusNewThread = this.focusNewThread.bind(this)
-    this.showNewThreads = this.showNewThreads.bind(this)
-    this.toggleSettings = this.toggleSettings.bind(this)
   }
 
   componentWillMount() {
@@ -69,24 +64,18 @@ class Board extends Component {
     }
   }
 
-  handlePageSelect(page) {
+  handlePageSelect = (page) => {
     this.setState({ currentPage: page })
   }
 
-  focusNewThread() {
-    if (this.titleInput) {
-      this.titleInput.focus()
-    }
-  }
-
-  showNewThreads() {
+  showNewThreads = () => {
     this.setState({
       threads: this.props.boardThreads,
       currentPage: 1,
     })
   }
 
-  toggleSettings() {
+  toggleSettings = () => {
     this.setState({
       settingsVisible: !this.state.settingsVisible,
     })
@@ -135,11 +124,6 @@ class Board extends Component {
                 visible={isAdmin}
                 toggleVisible={this.toggleSettings}
                 styles={theme.SettingsButton}
-              />
-              <NewThreadButton
-                user={user}
-                newThread={this.focusNewThread}
-                styles={theme.NewThreadButton}
               />
             </div>
           </div>

@@ -118,7 +118,7 @@ class NewThread extends Component {
     jsonp(yql, function(o) {
        const items = o.query.results.meta
        const no_items=items.length
-       let title ='', link, imageUrl, description
+       let title, link = _this.state.link, imageUrl, description
        for(let i=0;i<no_items;i++) {
          if (items[i].property === 'og:title') {
            title = items[i].content
@@ -135,17 +135,27 @@ class NewThread extends Component {
        }
 
        if (!title) {
-         title = o.query.results.title | 'No page title found'
+         title = o.query.results.title
        }
 
        _this.setState({
          title: title.substring(0,maxTitleLength),
          link: link,
-         imageUrl: imageUrl,
-         description: description,
          loadingLink: false,
          loadedLink: true,
        })
+
+       if (imageUrl) {
+         _this.setState({
+           imageUrl: imageUrl,
+         })
+       }
+
+       if (description) {
+         _this.setState({
+            description: description,
+         })
+       }
      })
   }
 

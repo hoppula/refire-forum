@@ -25,6 +25,10 @@
     },
     "posts": {
       "$postId": {
+        "edited": {
+          ".validate": "newData.isBoolean() && newData.isBoolean()",
+          ".write": "auth != null && root.child('adminUsers').child(auth.uid).val() != null || auth != null && auth.uid == newData.child('user').child('id').val()"
+        },
         "likes": {
           "$uid": {
             ".validate": "newData.isBoolean()",
@@ -42,6 +46,12 @@
           ".validate": "newData.isString()"
         },
         "replyTo": {
+          ".validate": "root.child('posts').child(newData.val()).val() != null"
+        },
+        "editedLast": {
+          ".validate": "newData.isNumber() && newData.val() <= now"
+        },
+        "editedBy": {
           ".validate": "newData.isString()"
         },
         "user": {
@@ -62,7 +72,7 @@
         "$other": {
           ".validate": "false"
         },
-        ".write": "data.val() == null && auth != null && root.child('threads').child(newData.child('threadId').val()).child('locked').val() != true || data.val() != null && newData.val() == null && (auth != null && root.child('adminUsers').child(auth.uid).val() != null)"
+        ".write": "data.val() == null && auth != null && root.child('threads').child(newData.child('threadId').val()).child('locked').val() != true || data.val() != null && newData.val() != null && (auth != null && auth.uid == newData.child('user').child('id').val()) || data.val() != null && newData.val() == null && (auth != null && root.child('adminUsers').child(auth.uid).val() != null)"
       },
       ".read": "true"
     },
@@ -78,9 +88,12 @@
             ".write": "data.val() == null && auth != null && root.child('posts').child($postId).val() == null || data.val() != null && newData.val() == null && (auth != null && root.child('adminUsers').child(auth.uid).val() != null)"
           }
         },
-        ".validate": "newData.hasChildren(['boardId', 'createdAt', 'lastPostAt', 'title', 'user'])",
-        "boardId": {
+        ".validate": "newData.hasChildren(['title', 'boardId', 'createdAt', 'lastPostAt', 'user'])",
+        "title": {
           ".validate": "newData.isString()"
+        },
+        "boardId": {
+          ".validate": "root.child('boards').child(newData.val()).val() != null"
         },
         "createdAt": {
           ".validate": "newData.isNumber() && newData.val() <= now"
@@ -88,7 +101,13 @@
         "locked": {
           ".validate": "newData.isBoolean()"
         },
-        "title": {
+        "link": {
+          ".validate": "newData.isString()"
+        },
+        "imageUrl": {
+          ".validate": "newData.isString()"
+        },
+        "description": {
           ".validate": "newData.isString()"
         },
         "user": {
@@ -123,16 +142,17 @@
         },
         "threadsStarted": {
           "$threadId": {
-            ".validate": "newData.isBoolean()"
+            ".validate": "newData.isBoolean()",
+            ".write": "data.val() == null && root.child('threads').child($threadId).val() != null"
           }
         },
         "likes": {
           "$postId": {
             ".validate": "newData.isBoolean()",
-            ".write": "auth != null && auth.uid == $uid"
+            ".write": "auth != null && auth.uid == $uid && root.child('posts').child($postId).val() != null"
           }
         },
-        ".validate": "newData.hasChildren(['displayName', 'lastLoginAt', 'profileImageURL', 'provider', 'registeredAt'])",
+        ".validate": "newData.hasChildren(['displayName', 'lastLoginAt', 'profileImageURL', 'provider'])",
         "displayName": {
           ".validate": "newData.isString()"
         },

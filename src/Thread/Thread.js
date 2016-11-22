@@ -80,6 +80,10 @@ class Thread extends Component {
       ? <a href={thread.link}>{thread.title}</a>
       : <span>{thread.title}</span>
 
+    const link = thread.link
+      ? <div className={styles.link}><a href={thread.link}>{thread.link.split('/')[2]}</a></div>
+      : <div></div>
+
     const titleTag = thread.title.length > 30
       ? <h3 className={styles.header}>
           {title}
@@ -126,6 +130,9 @@ class Thread extends Component {
                   </Row>
                   <Row>
                     {thread.description || ' '}
+                  </Row>
+                  <Row className={styles.link}>
+                    {link}
                   </Row>
                 </Col>
               </Row>
@@ -198,6 +205,11 @@ const css = {
   comment: {
     margin: "10px",
   },
+  link: {
+    fontSize: ".8em",
+    textTransform: "uppercase",
+    margin: ".5em",
+  },
   container: {},
   headerContainer: {
     borderBottomStyle: "solid",
@@ -207,7 +219,7 @@ const css = {
   },
   header: {
     minHeight: "28px",
-    margin: "0em 0 1em 0",
+    margin: "0em 0 .5em 0",
     display: "inline-block",
   },
   lockContainer: {
