@@ -4,8 +4,23 @@ isLoggedIn() { auth != null }
 isCurrentUser(uid) { isLoggedIn() && currentUser() == uid }
 isAdmin() { isLoggedIn() && prior(root).adminUsers[auth.uid] != null }
 isThreadOpen(threadId) { prior(root).threads[threadId].locked != true }
+isBoardKey(boardKey) { prior(root).boards[boardKey] != null }
+isThreadKey(threadKey) { prior(root).threads[threadKey] != null }
+isPostKey(postKey) { prior(root).posts[postKey] != null }
 
 // Types
+type BoardKey {
+  validate() { isBoardKey(this) }
+}
+
+type ThreadKey {
+  validate() { isThreadKey(this) }
+}
+
+type PostKey {
+  validate() { isPostKey(this) }
+}
+
 type CurrentUserId {
   validate() { isLoggedIn() && this === currentUser() }
 }
@@ -37,17 +52,23 @@ type User {
 type Post {
   body: String,
   createdAt: Timestamp,
-  threadId: String, // TODO: create helper method & type that check threadId validity
-  replyTo: String | Null,
+  threadId: String,  // ThreadKey type doesn't work here because of concurrent creation?
+  replyTo: PostKey | Null,
+  edited: Boolean | Null,
+  editedLast: Timestamp | Null,
+  editedBy: String | Null,
   user: UserMeta
 }
 
 type Thread {
-  boardId: String, // TODO: create helper method & type that check boardId validity
+  title: String,
+  boardId: BoardKey,
   createdAt: Timestamp,
   lastPostAt: Timestamp,
   locked: Boolean | Null,
-  title: String,
+  link: String | Null,
+  imageUrl: String | Null,
+  description: String | Null,
   user: UserMeta
 }
 
@@ -64,6 +85,7 @@ path /boards {
     create() { isLoggedIn() }
     delete() { isAdmin() }
   }
+
   index() { [ "active" ] }
 }
 
@@ -79,7 +101,12 @@ path /posts {
   read() { true }
   /{postId} is Post {
     create() { isLoggedIn() && isThreadOpen(this.threadId) }
+    update() { isCurrentUser(this.user.id) }
     delete() { isAdmin() }
+
+    /edited is Boolean {
+      write() { isAdmin() || isCurrentUser(this.user.id) }
+    }
 
     /likes/{uid} is Boolean {
       write() { isCurrentUser(uid) }
@@ -122,12 +149,14 @@ path /users/{uid} is User {
     delete() { isAdmin() }
   }
 
-  /threadsStarted/{threadId} is Boolean {}
+  /threadsStarted/{threadId} is Boolean {
+    create() { isThreadKey(threadId) }
+  }
 
   /likes/{postId} is Boolean {
     // TODO: this currently has no effect as write is already allowed
     // for current user & admin
-    write() { isCurrentUser(uid) }
+    write() { isCurrentUser(uid) && isPostKey(postId) }
   }
 }
 

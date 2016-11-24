@@ -23,7 +23,7 @@ const css = {
     display: "inline-block",
     paddingRight: "20px",
     verticalAlign: "top",
-    color: "#555",
+    color: "#955",
   },
 }
 

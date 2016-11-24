@@ -11,6 +11,7 @@ const Posts = ({
   deletePost,
   updateQuote,
   toggleUpvote,
+  selectLastPage,
   styles,
   theme,
 }) => {
@@ -36,6 +37,7 @@ const Posts = ({
                 deletePost={deletePost}
                 updateQuote={updateQuote}
                 toggleUpvote={toggleUpvote}
+                selectLastPage={selectLastPage}
                 styles={theme.Post}
                 theme={theme}
               />

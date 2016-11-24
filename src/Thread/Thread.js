@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { styles } from 'refire-app'
-import { Card } from 'elemental'
+import { Card, Row, Col } from 'elemental'
 import LockIcon from 'react-icons/lib/fa/lock'
+import FAComment from 'react-icons/lib/fa/comment'
+import FaChain from 'react-icons/lib/fa/chain'
 
 import ReplyToThread from './ReplyToThread'
 import Posts from './Posts'
@@ -48,13 +50,47 @@ class Thread extends Component {
         toggleLocked,
         updateQuote,
         toggleUpvote,
+        saveEditedPost,
       },
     } = this.props
     const { THREAD_PAGE_SIZE, THREAD_PAGE_LIMIT } = settings
     const locked = thread.locked
       ? <LockIcon size="22px" />
       : <span />
+    const defaultImage = thread.link
+      ? (<FaChain
+          size="100px"
+          color="#eeeeee"
+          className={styles.comment}
+        />)
+      : (<FAComment
+          size="100px"
+          color="#eeeeee"
+          className={styles.comment}
+        />)
+    const image = thread.imageUrl
+      ? <a href={thread.link}><img
+          src={thread.imageUrl}
+          className={styles.image}
+          width={thread.imageWidth || '125px'}
+        /></a>
+      : <div>{defaultImage}</div>
 
+    const title = thread.link
+      ? <a href={thread.link}>{thread.title}</a>
+      : <span>{thread.title}</span>
+
+    const link = thread.link
+      ? <div className={styles.link}><a href={thread.link}>{thread.link.split('/')[2]}</a></div>
+      : <div></div>
+
+    const titleTag = thread.title.length > 30
+      ? <h3 className={styles.header}>
+          {title}
+        </h3>
+      : <h2 className={styles.header}>
+          {title}
+        </h2>
     return (
       <div>
         <DeleteDialog
@@ -84,9 +120,22 @@ class Thread extends Component {
               <div className={styles.lockContainer}>
                 {locked}
               </div>
-              <h2 className={styles.header}>
-                {thread.title}
-              </h2>
+              <Row>
+                <Col sm="1/4">
+                  {image}
+                </Col>
+                <Col sm="3/4">
+                  <Row>
+                    {titleTag}
+                  </Row>
+                  <Row>
+                    {thread.description || ' '}
+                  </Row>
+                  <Row className={styles.link}>
+                    {link}
+                  </Row>
+                </Col>
+              </Row>
             </div>
             <TopToolbar
               isAdmin={isAdmin}
@@ -117,6 +166,7 @@ class Thread extends Component {
             deletePost={showDeletePostDialog}
             updateQuote={updateQuote}
             toggleUpvote={toggleUpvote}
+            saveEditedPost={saveEditedPost}
             user={user}
             locked={thread.locked}
             isAdmin={isAdmin}
@@ -149,10 +199,27 @@ class Thread extends Component {
 }
 
 const css = {
+  image: {
+    margin: "10px",
+  },
+  comment: {
+    margin: "10px",
+  },
+  link: {
+    fontSize: ".8em",
+    textTransform: "uppercase",
+    margin: ".5em",
+  },
   container: {},
+  headerContainer: {
+    borderBottomStyle: "solid",
+    borderBottomWidth: "1px",
+    borderBottomColor: "#eeeeee",
+    marginBottom: "1em",
+  },
   header: {
     minHeight: "28px",
-    margin: "0em 0 1em 0",
+    margin: "0em 0 .5em 0",
     display: "inline-block",
   },
   lockContainer: {

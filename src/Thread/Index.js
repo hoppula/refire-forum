@@ -21,6 +21,8 @@ class Index extends Component {
       deleteDialogVisible: false,
       lockDialogVisible: false,
       deletePostDialogVisible: false,
+      editPostVisible: false,
+      displayPostVisible: true,
       deletePostKey: null,
     }
   }

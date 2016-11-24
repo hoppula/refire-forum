@@ -5,15 +5,16 @@ import CodeBlock from '../App/CodeBlock'
 
 const PreviewFields = ({
   preview,
-  topic,
+  visible,
+  title,
   text,
   styles,
 }) => {
-  if (preview) {
-    if (!topic.length && !text.length) {
+  if (preview && visible) {
+    if (!title.length && !text.length) {
       return (
         <div>
-          <h3 className={styles.topicPreview}>
+          <h3 className={styles.titlePreview}>
             Nothing to preview yet
           </h3>
         </div>
@@ -22,8 +23,8 @@ const PreviewFields = ({
 
     return (
       <div>
-        <h3 className={styles.topicPreview}>
-          {topic}
+        <h3 className={styles.titlePreview}>
+          {title}
         </h3>
         <div className={styles.textPreview}>
           <ReactMarkdown
@@ -45,7 +46,7 @@ const PreviewFields = ({
 }
 
 const css = {
-  topicPreview: {
+  titlePreview: {
     padding: "10px 0 10px 0",
   },
   textPreview: {

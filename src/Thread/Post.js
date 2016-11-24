@@ -1,29 +1,48 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { Link, styles } from 'refire-app'
 import { Row, Col, Card } from 'elemental'
-import ReactMarkdown from 'react-markdown'
+import PostBody from './PostBody'
+import EditPost from './EditPost'
 import includes from 'lodash/includes'
 import { fromNow } from '../utils'
-import CodeBlock from '../App/CodeBlock'
-
 import DeletePostButton from './DeletePostButton'
 import QuoteButton from './QuoteButton'
 import ReplyButton from './ReplyButton'
 import UpvoteButton from './UpvoteButton'
+import EditButton from './EditButton'
 
-const Post = ({
-  postKey,
-  post,
-  user,
-  locked,
-  isAdmin,
-  deletePost,
-  updateQuote,
-  toggleUpvote,
-  styles,
-  theme,
-}) => {
 
+
+class Post extends Component {
+
+  constructor(props, context) {
+    super(props, context)
+    this.state = {
+      showEdit: false,
+    }
+  }
+
+  setShowEdit = (show) => {
+    this.setState({
+      showEdit: show,
+    })
+  }
+
+  render() {
+    const {
+      postKey,
+      post,
+      user,
+      locked,
+      isAdmin,
+      deletePost,
+      updateQuote,
+      toggleUpvote,
+      selectLastPage,
+      threadKey,
+      styles,
+      theme,
+    } = this.props
   if (!post) {
     return (
       <Row>
@@ -50,6 +69,7 @@ const Post = ({
   }
 
   const uid = user ? user.uid : undefined
+  const mine = post.user.id === uid
 
   return (
     <Row>
@@ -70,19 +90,27 @@ const Post = ({
         lg="11/12"
       >
         <Card className={styles.container}>
-          <div className={styles.bodyContainer}>
-            <ReactMarkdown
-              className={styles.markdown}
-              escapeHtml={true}
-              source={post.body}
-              renderers={
-                {
-                  ...ReactMarkdown.renderers,
-                  ...{ CodeBlock },
-                }
-              }
-            />
-          </div>
+          <PostBody
+            post={post}
+            hide={this.state.showEdit}
+            styles={theme.postBody}
+          />
+          <EditPost
+            user={user}
+            threadKey={threadKey}
+            postKey={postKey}
+            post={post}
+            cancel={this.cancelEditPost}
+            showEdit={this.state.showEdit}
+            setShowEdit={this.setShowEdit}
+            editText={post.body}
+            cancelable={true}
+            editing={true}
+            selectLastPage={selectLastPage}
+            buttonCaption={'Save'}
+            styles={theme.ReplyToThread}
+            theme={theme}
+          />
           <div className={styles.bottomToolbar}>
             <div className={styles.mobileProfileContainer}>
               <Link to={`/profile/${post.user.id}`}>
@@ -118,6 +146,13 @@ const Post = ({
                 onClick={() => updateQuote("", postKey)}
                 styles={theme.ReplyButton}
               />
+              <EditButton
+                user={user}
+                isAdmin={isAdmin}
+                mine={mine}
+                onClick={() => { this.setShowEdit(true)}}
+                styles={theme.EditButton}
+              />
               <UpvoteButton
                 user={user}
                 upvotes={Object.keys(post.likes || {}).length || 0}
@@ -131,6 +166,7 @@ const Post = ({
       </Col>
     </Row>
   )
+}
 }
 
 const css = {
@@ -158,6 +194,12 @@ const css = {
   profileContainer: {
     position: "relative",
     textAlign: "center",
+  },
+  profileImage: {
+    borderRadius: "20px",
+    height: "40px",
+    width: "40px",
+    margin: "0 10px 0 0",
   },
   mobileProfileContainer: {
     position: "relative",
